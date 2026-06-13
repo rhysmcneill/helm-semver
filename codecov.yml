@@ -10,10 +10,15 @@ coverage:
         target: 50%      # new code added in a PR must be at least 50% covered
         threshold: 5%
 
-  # Ignore files that shouldn't count toward coverage.
+  # Ignore files that require live external services (OCI registry, GitHub API,
+  # GitHub Pages git push). These are covered by integration/e2e tests.
   ignore:
-    - "e2e/**"           # smoke tests, not unit-testable in the normal sense
-    - "cmd/helm-semver/main.go"  # thin wiring layer
+    - "e2e/**"
+    - "cmd/helm-semver/main.go"
+    - "internal/registry/oci.go"
+    - "internal/registry/ghpages.go"
+    - "internal/registry/chartmuseum.go"
+    - "internal/release/release.go"
 
 comment:
   layout: "reach,diff,flags,files"

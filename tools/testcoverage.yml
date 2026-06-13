@@ -5,8 +5,13 @@ threshold:
   package: 50
   total: 60
 
-# Files excluded from coverage checks (match codecov.yml ignores).
+# Exclude files that require live external services (OCI registry, GitHub API,
+# GitHub Pages git push). These are covered by integration/e2e tests, not unit tests.
 exclude:
   paths:
     - ^e2e/
     - ^cmd/helm-semver/main\.go$
+    - ^internal/registry/oci\.go$
+    - ^internal/registry/ghpages\.go$
+    - ^internal/registry/chartmuseum\.go$
+    - ^internal/release/release\.go$
