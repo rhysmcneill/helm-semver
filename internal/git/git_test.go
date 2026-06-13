@@ -24,7 +24,7 @@ func initTestRepo(t *testing.T) (*Client, string) {
 
 	// Seed with an initial file and commit.
 	seedFile := filepath.Join(dir, "README.md")
-	_ = os.WriteFile(seedFile, []byte("# test"), 0o644)
+	_ = os.WriteFile(seedFile, []byte("# test"), 0o600)
 	_, _ = wt.Add("README.md")
 	_, err = wt.Commit("chore: initial commit", &gogit.CommitOptions{
 		Author: &object.Signature{Name: "test", Email: "test@test.com"},
@@ -40,8 +40,8 @@ func addCommit(t *testing.T, c *Client, dir, file, msg string) {
 	t.Helper()
 	wt, _ := c.repo.Worktree()
 	fullPath := filepath.Join(dir, file)
-	_ = os.MkdirAll(filepath.Dir(fullPath), 0o755)
-	_ = os.WriteFile(fullPath, []byte(msg), 0o644)
+	_ = os.MkdirAll(filepath.Dir(fullPath), 0o750)
+	_ = os.WriteFile(fullPath, []byte(msg), 0o600)
 	_, _ = wt.Add(file)
 	_, err := wt.Commit(msg, &gogit.CommitOptions{
 		Author: &object.Signature{Name: "test", Email: "test@test.com"},
@@ -102,8 +102,8 @@ func TestStageAndCommit(t *testing.T) {
 	c, dir := initTestRepo(t)
 
 	newFile := filepath.Join(dir, "charts/app/Chart.yaml")
-	_ = os.MkdirAll(filepath.Dir(newFile), 0o755)
-	_ = os.WriteFile(newFile, []byte("version: 0.2.0"), 0o644)
+	_ = os.MkdirAll(filepath.Dir(newFile), 0o750)
+	_ = os.WriteFile(newFile, []byte("version: 0.2.0"), 0o600)
 
 	if err := c.StageFile("charts/app/Chart.yaml"); err != nil {
 		t.Fatalf("StageFile() error = %v", err)

@@ -49,7 +49,7 @@ func (c *Client) UploadAsset(ctx context.Context, releaseID int64, assetPath str
 	}
 	defer f.Close() //nolint:errcheck
 
-	name := fmt.Sprintf("%s", assetPath)
+	name := assetPath
 	opts := &github.UploadOptions{Name: name}
 	_, _, err = c.gh.Repositories.UploadReleaseAsset(ctx, c.owner, c.repo, releaseID, opts, f)
 	if err != nil {

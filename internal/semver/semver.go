@@ -13,10 +13,14 @@ import (
 type BumpType int
 
 const (
+	// BumpNone means no releasable commits were found.
 	BumpNone  BumpType = iota
-	BumpPatch          // fix:
-	BumpMinor          // feat:
-	BumpMajor          // feat! / BREAKING CHANGE
+	// BumpPatch is triggered by fix: commits.
+	BumpPatch
+	// BumpMinor is triggered by feat: commits.
+	BumpMinor
+	// BumpMajor is triggered by feat! or BREAKING CHANGE commits.
+	BumpMajor
 )
 
 var (

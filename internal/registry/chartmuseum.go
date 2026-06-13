@@ -57,7 +57,9 @@ func (p *ChartMuseumPublisher) Push(chartDir, _ string) error {
 	if _, err = io.Copy(part, f); err != nil {
 		return fmt.Errorf("copying chart data: %w", err)
 	}
-	writer.Close() //nolint:errcheck
+	if err := writer.Close(); err != nil {
+		return fmt.Errorf("closing multipart writer: %w", err)
+	}
 
 	url := fmt.Sprintf("%s/api/charts", p.BaseURL)
 	req, err := http.NewRequest(http.MethodPost, url, &body) //nolint:noctx

@@ -26,7 +26,7 @@ func TestAppend_NewFile(t *testing.T) {
 		t.Fatalf("Append() error = %v", err)
 	}
 
-	data, _ := os.ReadFile(path)
+	data, _ := os.ReadFile(path) //nolint:gosec // path from t.TempDir()
 	content := string(data)
 
 	if !strings.Contains(content, "## [0.2.0] - 2026-06-13") {
@@ -54,7 +54,7 @@ func TestAppend_Prepends(t *testing.T) {
 	_ = Append(path, "0.1.0", fixedDate, []string{"fix: initial release"})
 	_ = Append(path, "0.2.0", fixedDate.AddDate(0, 0, 1), []string{"feat: new flag"})
 
-	data, _ := os.ReadFile(path)
+	data, _ := os.ReadFile(path) //nolint:gosec // path from t.TempDir()
 	content := string(data)
 
 	idx02 := strings.Index(content, "0.2.0")
@@ -74,7 +74,7 @@ func TestAppend_PreservesExistingContent(t *testing.T) {
 
 	_ = Append(path, "0.2.0", fixedDate, []string{"feat: new feature"})
 
-	data, _ := os.ReadFile(path)
+	data, _ := os.ReadFile(path) //nolint:gosec // path from t.TempDir()
 	content := string(data)
 
 	if !strings.Contains(content, "old entry") {

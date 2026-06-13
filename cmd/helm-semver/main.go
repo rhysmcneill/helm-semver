@@ -1,3 +1,4 @@
+// Package main is the entry point for the helm-semver CLI.
 package main
 
 import (
@@ -107,17 +108,17 @@ and pushes it to the configured registry.`,
 func runRelease(cmd *cobra.Command, opts *releaseOptions) error {
 	repoRoot, err := findRepoRoot()
 	if err != nil {
-		return err
+		return fmt.Errorf("finding repository root: %w", err)
 	}
 
 	gitClient, err := igit.Open(repoRoot)
 	if err != nil {
-		return err
+		return fmt.Errorf("opening git repository: %w", err)
 	}
 
 	pub, err := newPublisher(opts)
 	if err != nil {
-		return err
+		return fmt.Errorf("initialising publisher: %w", err)
 	}
 
 	chartsDir := filepath.Join(repoRoot, opts.chartsDir)
@@ -160,24 +161,24 @@ func releaseChart(cmd *cobra.Command, opts *releaseOptions, gitClient *igit.Clie
 	// Resolve current version.
 	m, err := chart.Load(filepath.Join(chartDir, "Chart.yaml"))
 	if err != nil {
-		return err
+		return fmt.Errorf("loading chart %s: %w", chartName, err)
 	}
 
 	// Find last release tag and commits since.
 	tagName := opts.tagPrefix + chartName
 	lastTag, err := gitClient.LatestTag(tagName)
 	if err != nil {
-		return err
+		return fmt.Errorf("resolving latest tag for %s: %w", chartName, err)
 	}
 
 	relPath, err := filepath.Rel(repoRoot, chartDir)
 	if err != nil {
-		return err
+		return fmt.Errorf("resolving relative path for %s: %w", chartName, err)
 	}
 
 	commits, err := gitClient.CommitsSince(lastTag, relPath)
 	if err != nil {
-		return err
+		return fmt.Errorf("listing commits for %s: %w", chartName, err)
 	}
 
 	bump := semver.Analyze(commits)
@@ -188,7 +189,7 @@ func releaseChart(cmd *cobra.Command, opts *releaseOptions, gitClient *igit.Clie
 
 	newVersion, err := semver.Next(m.Version, bump)
 	if err != nil {
-		return err
+		return fmt.Errorf("computing next version for %s: %w", chartName, err)
 	}
 
 	newTag := opts.tagPrefix + chartName + "-v" + newVersion
@@ -209,7 +210,7 @@ func releaseChart(cmd *cobra.Command, opts *releaseOptions, gitClient *igit.Clie
 
 	// Bump Chart.yaml.
 	if err := chart.BumpVersion(filepath.Join(chartDir, "Chart.yaml"), newVersion); err != nil {
-		return err
+		return fmt.Errorf("bumping version for %s: %w", chartName, err)
 	}
 
 	// Push to registry.
@@ -225,23 +226,23 @@ func releaseChart(cmd *cobra.Command, opts *releaseOptions, gitClient *igit.Clie
 			return fmt.Errorf("updating changelog: %w", err)
 		}
 		if err := gitClient.StageFile(filepath.Join(relPath, "CHANGELOG.md")); err != nil {
-			return err
+			return fmt.Errorf("staging CHANGELOG.md for %s: %w", chartName, err)
 		}
 	}
 
 	// Stage Chart.yaml and commit.
 	if err := gitClient.StageFile(filepath.Join(relPath, "Chart.yaml")); err != nil {
-		return err
+		return fmt.Errorf("staging Chart.yaml for %s: %w", chartName, err)
 	}
 
 	commitMsg := fmt.Sprintf("chore(%s): release v%s [skip ci]", chartName, newVersion)
 	if err := gitClient.Commit(commitMsg, opts.authorName, opts.authorEmail); err != nil {
-		return err
+		return fmt.Errorf("committing release for %s: %w", chartName, err)
 	}
 
 	// Tag.
 	if err := gitClient.Tag(newTag); err != nil {
-		return err
+		return fmt.Errorf("tagging %s: %w", newTag, err)
 	}
 	fmt.Fprintf(out, "    tagged %s\n", newTag)
 
@@ -251,7 +252,7 @@ func releaseChart(cmd *cobra.Command, opts *releaseOptions, gitClient *igit.Clie
 		rc := release.New(opts.githubToken, opts.githubOwner, opts.githubRepo)
 		url, err := rc.CreateRelease(context.Background(), newTag, chartName+" "+newVersion, notes)
 		if err != nil {
-			return err
+			return fmt.Errorf("creating GitHub release for %s: %w", newTag, err)
 		}
 		fmt.Fprintf(out, "    GitHub Release: %s\n", url)
 	}

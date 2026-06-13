@@ -45,7 +45,7 @@ func repoRoot() (string, error) {
 
 func run(t *testing.T, args ...string) (string, string, error) {
 	t.Helper()
-	cmd := exec.Command(binaryPath(), args...)
+	cmd := exec.Command(binaryPath(), args...) //nolint:gosec // binary path is resolved internally
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
@@ -82,11 +82,11 @@ func TestBinary_DryRun(t *testing.T) {
 
 	// Create a minimal chart.
 	chartDir := filepath.Join(dir, "charts", "myapp")
-	_ = os.MkdirAll(chartDir, 0o755)
+	_ = os.MkdirAll(chartDir, 0o750)
 	_ = os.WriteFile(filepath.Join(chartDir, "Chart.yaml"), []byte(`apiVersion: v2
 name: myapp
 version: 0.1.0
-`), 0o644)
+`), 0o600)
 
 	_, _ = wt.Add("charts/myapp/Chart.yaml")
 	_, err = wt.Commit("feat: initial chart", &gogit.CommitOptions{
@@ -97,7 +97,7 @@ version: 0.1.0
 	}
 
 	// Run release in dry-run mode.
-	cmd := exec.Command(binaryPath(),
+	cmd := exec.Command(binaryPath(), //nolint:gosec // args are test-internal constants
 		"release",
 		"--registry", "oci://ghcr.io/test-org/helm-charts",
 		"--registry-type", "oci",
