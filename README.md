@@ -10,7 +10,6 @@ Works as a GitHub Action or standalone Docker image on any CI platform.</p>
 
 <br>
 
-[![CI](https://github.com/rmcneill/helm-semver/actions/workflows/ci.yml/badge.svg)](https://github.com/rmcneill/helm-semver/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/rmcneill/helm-semver/branch/main/graph/badge.svg)](https://codecov.io/gh/rmcneill/helm-semver)
 [![Go](https://img.shields.io/badge/Go-1.26+-00ADD8?logo=go)](https://golang.org)
 [![Version](https://img.shields.io/github/v/tag/rmcneill/helm-semver)](https://github.com/rmcneill/helm-semver/releases)
