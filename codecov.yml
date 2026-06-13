@@ -1,0 +1,21 @@
+coverage:
+  # Minimum overall coverage — PRs that drop below this will fail.
+  status:
+    project:
+      default:
+        target: 60%
+        threshold: 2%    # allow up to 2% drop before failing
+    patch:
+      default:
+        target: 50%      # new code added in a PR must be at least 50% covered
+        threshold: 5%
+
+  # Ignore files that shouldn't count toward coverage.
+  ignore:
+    - "e2e/**"           # smoke tests, not unit-testable in the normal sense
+    - "cmd/helm-semver/main.go"  # thin wiring layer
+
+comment:
+  layout: "reach,diff,flags,files"
+  behavior: default
+  require_changes: true  # only comment if coverage changed

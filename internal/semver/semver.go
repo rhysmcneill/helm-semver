@@ -1,0 +1,82 @@
+// Package semver parses conventional commits and computes the next semantic
+// version for a Helm chart.
+package semver
+
+import (
+	"regexp"
+	"strings"
+
+	"github.com/Masterminds/semver/v3"
+)
+
+// BumpType represents the kind of version increment.
+type BumpType int
+
+const (
+	BumpNone  BumpType = iota
+	BumpPatch          // fix:
+	BumpMinor          // feat:
+	BumpMajor          // feat! / BREAKING CHANGE
+)
+
+var (
+	reBreaking = regexp.MustCompile(`^[a-z]+(\([^)]+\))?!:`)
+	reFeat     = regexp.MustCompile(`^feat(\([^)]+\))?:`)
+	reFix      = regexp.MustCompile(`^fix(\([^)]+\))?:`)
+)
+
+// Analyze inspects a slice of commit subject lines and returns the most
+// significant bump type required.
+func Analyze(commits []string) BumpType {
+	bump := BumpNone
+	for _, msg := range commits {
+		msg = strings.TrimSpace(msg)
+		if reBreaking.MatchString(msg) || strings.Contains(strings.ToUpper(msg), "BREAKING CHANGE") {
+			return BumpMajor
+		}
+		if reFeat.MatchString(msg) && bump < BumpMinor {
+			bump = BumpMinor
+		}
+		if reFix.MatchString(msg) && bump < BumpPatch {
+			bump = BumpPatch
+		}
+	}
+	return bump
+}
+
+// Next computes the next version string from a current semver string and a
+// BumpType. Returns the new version string and an error if current is invalid.
+func Next(current string, bump BumpType) (string, error) {
+	v, err := semver.NewVersion(current)
+	if err != nil {
+		return "", err
+	}
+
+	var next semver.Version
+	switch bump {
+	case BumpMajor:
+		next = v.IncMajor()
+	case BumpMinor:
+		next = v.IncMinor()
+	case BumpPatch:
+		next = v.IncPatch()
+	default:
+		return current, nil
+	}
+
+	return next.Original(), nil
+}
+
+// String returns a human-readable label for a BumpType.
+func (b BumpType) String() string {
+	switch b {
+	case BumpMajor:
+		return "major"
+	case BumpMinor:
+		return "minor"
+	case BumpPatch:
+		return "patch"
+	default:
+		return "none"
+	}
+}
