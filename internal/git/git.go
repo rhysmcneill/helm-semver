@@ -45,7 +45,7 @@ func (c *Client) LatestTag(chart string) (string, error) {
 		return nil
 	})
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("iterating tags: %w", err)
 	}
 
 	if len(matches) == 0 {

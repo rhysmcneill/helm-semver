@@ -104,11 +104,12 @@ func Append(path, version string, date time.Time, commits []string) error {
 	// Prepend after the title line if one exists, otherwise just prepend.
 	const title = "# Changelog\n"
 	var out string
-	if strings.HasPrefix(existing, title) {
+	switch {
+	case strings.HasPrefix(existing, title):
 		out = title + "\n" + section + strings.TrimPrefix(existing, title+"\n")
-	} else if existing == "" {
+	case existing == "":
 		out = title + "\n" + section
-	} else {
+	default:
 		out = section + existing
 	}
 

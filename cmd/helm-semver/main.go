@@ -46,7 +46,7 @@ func newVersionCmd() *cobra.Command {
 		Use:   "version",
 		Short: "Print helm-semver version information",
 		Run: func(cmd *cobra.Command, _ []string) {
-			fmt.Fprintf(cmd.OutOrStdout(), "helm-semver %s (commit: %s, built: %s)\n",
+			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "helm-semver %s (commit: %s, built: %s)\n",
 				version.Version, version.Commit, version.BuildDate)
 		},
 	}
@@ -146,7 +146,7 @@ func runRelease(cmd *cobra.Command, opts *releaseOptions) error {
 	}
 
 	if released > 0 && opts.gitPush && !opts.dryRun {
-		fmt.Fprintln(cmd.OutOrStdout(), "Pushing commits and tags…")
+		_, _ = fmt.Fprintln(cmd.OutOrStdout(), "Pushing commits and tags…")
 		if err := gitClient.Push("origin"); err != nil {
 			return fmt.Errorf("git push: %w", err)
 		}
@@ -183,7 +183,7 @@ func releaseChart(cmd *cobra.Command, opts *releaseOptions, gitClient *igit.Clie
 
 	bump := semver.Analyze(commits)
 	if bump == semver.BumpNone {
-		fmt.Fprintf(out, "  %s: no releasable commits — skipping\n", chartName)
+		_, _ = fmt.Fprintf(out, "  %s: no releasable commits — skipping\n", chartName)
 		return nil
 	}
 
@@ -194,16 +194,16 @@ func releaseChart(cmd *cobra.Command, opts *releaseOptions, gitClient *igit.Clie
 
 	newTag := opts.tagPrefix + chartName + "-v" + newVersion
 
-	fmt.Fprintf(out, "  %s: %s → %s (%s)\n", chartName, m.Version, newVersion, bump)
+	_, _ = fmt.Fprintf(out, "  %s: %s → %s (%s)\n", chartName, m.Version, newVersion, bump)
 
 	if opts.dryRun {
-		fmt.Fprintf(out, "    [dry-run] would push to %s\n", opts.registry)
-		fmt.Fprintf(out, "    [dry-run] would tag %s\n", newTag)
+		_, _ = fmt.Fprintf(out, "    [dry-run] would push to %s\n", opts.registry)
+		_, _ = fmt.Fprintf(out, "    [dry-run] would tag %s\n", newTag)
 		if opts.changelog {
-			fmt.Fprintf(out, "    [dry-run] would update CHANGELOG.md\n")
+			_, _ = fmt.Fprintf(out, "    [dry-run] would update CHANGELOG.md\n")
 		}
 		if opts.githubRelease {
-			fmt.Fprintf(out, "    [dry-run] would create GitHub Release %s\n", newTag)
+			_, _ = fmt.Fprintf(out, "    [dry-run] would create GitHub Release %s\n", newTag)
 		}
 		return nil
 	}
@@ -217,7 +217,7 @@ func releaseChart(cmd *cobra.Command, opts *releaseOptions, gitClient *igit.Clie
 	if err := pub.Push(chartDir, newVersion); err != nil {
 		return fmt.Errorf("pushing %s: %w", chartName, err)
 	}
-	fmt.Fprintf(out, "    pushed to %s\n", opts.registry)
+	_, _ = fmt.Fprintf(out, "    pushed to %s\n", opts.registry)
 
 	// Update changelog.
 	if opts.changelog {
@@ -244,7 +244,7 @@ func releaseChart(cmd *cobra.Command, opts *releaseOptions, gitClient *igit.Clie
 	if err := gitClient.Tag(newTag); err != nil {
 		return fmt.Errorf("tagging %s: %w", newTag, err)
 	}
-	fmt.Fprintf(out, "    tagged %s\n", newTag)
+	_, _ = fmt.Fprintf(out, "    tagged %s\n", newTag)
 
 	// GitHub Release.
 	if opts.githubRelease && opts.githubToken != "" {
@@ -254,7 +254,7 @@ func releaseChart(cmd *cobra.Command, opts *releaseOptions, gitClient *igit.Clie
 		if err != nil {
 			return fmt.Errorf("creating GitHub release for %s: %w", newTag, err)
 		}
-		fmt.Fprintf(out, "    GitHub Release: %s\n", url)
+		_, _ = fmt.Fprintf(out, "    GitHub Release: %s\n", url)
 	}
 
 	return nil
@@ -288,7 +288,7 @@ func newPublisher(opts *releaseOptions) (registry.Publisher, error) {
 func findRepoRoot() (string, error) {
 	dir, err := os.Getwd()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("getting working directory: %w", err)
 	}
 	for {
 		if _, err := os.Stat(filepath.Join(dir, ".git")); err == nil {

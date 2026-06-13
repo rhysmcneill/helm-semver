@@ -70,7 +70,7 @@ func TestAppend_PreservesExistingContent(t *testing.T) {
 	path := filepath.Join(dir, "CHANGELOG.md")
 
 	existing := "# Changelog\n\n## [0.1.0] - 2026-01-01\n\n### Fixed\n- fix: old entry\n"
-	_ = os.WriteFile(path, []byte(existing), 0o644)
+	_ = os.WriteFile(path, []byte(existing), 0o600)
 
 	_ = Append(path, "0.2.0", fixedDate, []string{"feat: new feature"})
 

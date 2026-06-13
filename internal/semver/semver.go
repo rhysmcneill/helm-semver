@@ -3,6 +3,7 @@
 package semver
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -53,7 +54,7 @@ func Analyze(commits []string) BumpType {
 func Next(current string, bump BumpType) (string, error) {
 	v, err := semver.NewVersion(current)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("parsing version %q: %w", current, err)
 	}
 
 	var next semver.Version

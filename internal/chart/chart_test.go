@@ -10,7 +10,7 @@ func writeChart(t *testing.T, content string) string {
 	t.Helper()
 	dir := t.TempDir()
 	path := filepath.Join(dir, "Chart.yaml")
-	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
+	if err := os.WriteFile(path, []byte(content), 0o600); err != nil {
 		t.Fatalf("writing temp chart: %v", err)
 	}
 	return path
@@ -101,7 +101,7 @@ description: Umbrella chart
 	}
 
 	// Raw content should still contain the comment.
-	raw, _ := os.ReadFile(path)
+	raw, _ := os.ReadFile(path) //nolint:gosec // path from t.TempDir()
 	if !containsString(string(raw), "# this comment must be preserved") {
 		t.Error("BumpVersion removed comment from Chart.yaml")
 	}
