@@ -7,7 +7,7 @@
 
 * initial release ([#1](https://github.com/rhysmcneill/helm-semver/issues/1)) ([e9bdc02](https://github.com/rhysmcneill/helm-semver/commit/e9bdc02a0ab5e728dc27bad640e430b5b52e5b9f))
 
-## Changelog
+---
 
 All notable changes to helm-semver will be documented in this file.
 

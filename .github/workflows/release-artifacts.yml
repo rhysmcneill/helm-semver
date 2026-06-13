@@ -1,32 +1,26 @@
-name: Release Please
+name: Release Artifacts
+
+# Manually re-run or backfill binaries + Docker for any existing tag.
+# Use this to fix a release where artifacts were missing (e.g. the initial v1.0.0).
+#
+# Usage:
+#   gh workflow run release-artifacts.yml --field tag=v1.0.0
+#   or: Actions → Release Artifacts → Run workflow → enter tag
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to build artifacts for (e.g. v1.0.0)"
+        required: true
 
 permissions:
   contents: write
-  pull-requests: write
+  packages: write
 
 jobs:
-  release-please:
-    name: Release Please
-    runs-on: ubuntu-latest
-    outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
-      tag_name: ${{ steps.release.outputs.tag_name }}
-    steps:
-      - uses: googleapis/release-please-action@v4
-        id: release
-        with:
-          release-type: go
-          config-file: tools/release-please-config.json
-          manifest-file: tools/.release-please-manifest.json
-
   binaries:
     name: Build & upload binaries
-    needs: release-please
-    if: needs.release-please.outputs.release_created == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -42,6 +36,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.inputs.tag }}
 
       - uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
         with:
@@ -52,7 +48,7 @@ jobs:
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
-          TAG: ${{ needs.release-please.outputs.tag_name }}
+          TAG: ${{ github.event.inputs.tag }}
         run: |
           VERSION="${TAG#v}"
           COMMIT="${GITHUB_SHA::8}"
@@ -69,14 +65,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release upload ${{ needs.release-please.outputs.tag_name }} \
+          gh release upload ${{ github.event.inputs.tag }} \
             helm-semver-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.ext }} \
-            helm-semver-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.ext }}.sha256
+            helm-semver-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.ext }}.sha256 \
+            --clobber
 
   docker:
     name: Build & push Docker image
-    needs: release-please
-    if: needs.release-please.outputs.release_created == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -84,6 +79,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.inputs.tag }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@29109295f81e9208d7d86ff9f31afdc8c9a6b1b4 # v3.6.0
@@ -104,8 +101,8 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository_owner }}/helm-semver
           tags: |
-            type=semver,pattern={{version}},value=${{ needs.release-please.outputs.tag_name }}
-            type=semver,pattern={{major}}.{{minor}},value=${{ needs.release-please.outputs.tag_name }}
+            type=semver,pattern={{version}},value=${{ github.event.inputs.tag }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ github.event.inputs.tag }}
             type=raw,value=latest
 
       - name: Build and push
@@ -117,7 +114,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            VERSION=${{ needs.release-please.outputs.tag_name }}
+            VERSION=${{ github.event.inputs.tag }}
             COMMIT=${{ github.sha }}
             BUILD_DATE=${{ github.event.repository.updated_at }}
           cache-from: type=gha
