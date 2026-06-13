@@ -1,0 +1,63 @@
+# Pre-commit hooks for helm-semver.
+# Run `make setup` once after cloning to install.
+#
+# Mirrors Makefile targets (fmt, vet, lint) so contributors run the same
+# checks locally that CI runs on every PR.
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      - id: check-merge-conflict
+      - id: no-commit-to-branch
+        args: [--branch, main]
+      - id: check-yaml
+      - id: check-json
+
+  - repo: https://github.com/dnephin/pre-commit-golang
+    rev: v0.5.1
+    hooks:
+      - id: go-fmt
+
+  - repo: local
+    hooks:
+      - id: go-vet
+        name: go vet
+        language: system
+        entry: go
+        args: [vet, ./...]
+        types: [go]
+        pass_filenames: false
+      - id: golangci-lint
+        name: golangci-lint
+        language: system
+        entry: env GOTOOLCHAIN=local golangci-lint
+        args: [run, --fix=false]
+        types: [go]
+        pass_filenames: false
+      - id: gosec
+        name: gosec
+        language: system
+        entry: gosec
+        args: [./...]
+        types: [go]
+        pass_filenames: false
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: [--baseline, .secrets.baseline]
+
+  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+    rev: v9.25.0
+    hooks:
+      - id: commitlint
+        stages: [commit-msg]
+        additional_dependencies: ["@commitlint/config-conventional"]

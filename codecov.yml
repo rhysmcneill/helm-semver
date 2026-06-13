@@ -1,0 +1,26 @@
+coverage:
+  # Minimum overall coverage — PRs that drop below this will fail.
+  status:
+    project:
+      default:
+        target: 60%
+        threshold: 2%    # allow up to 2% drop before failing
+    patch:
+      default:
+        target: 50%      # new code added in a PR must be at least 50% covered
+        threshold: 5%
+
+  # Ignore files that require live external services (OCI registry, GitHub API,
+  # GitHub Pages git push). These are covered by integration/e2e tests.
+  ignore:
+    - "e2e/**"
+    - "cmd/helm-semver/main.go"
+    - "internal/registry/oci.go"
+    - "internal/registry/ghpages.go"
+    - "internal/registry/chartmuseum.go"
+    - "internal/release/release.go"
+
+comment:
+  layout: "reach,diff,flags,files"
+  behavior: default
+  require_changes: true  # only comment if coverage changed

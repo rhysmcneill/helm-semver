@@ -1,0 +1,68 @@
+name: helm-semver
+description: >
+  Semver release automation for Helm chart monorepos. Bumps chart versions
+  from conventional commits, packages and pushes to any OCI registry.
+  Works as a GitHub Action or standalone Docker image on any CI platform.
+
+inputs:
+  registry:
+    description: Registry URL (e.g. oci://ghcr.io/my-org/helm-charts)
+    required: true
+  registry-type:
+    description: "Registry type: oci, chartmuseum, github-pages"
+    required: false
+    default: oci
+  registry-username:
+    description: Registry username
+    required: false
+  registry-password:
+    description: Registry password
+    required: false
+  charts-dir:
+    description: Root directory containing chart subdirectories
+    required: false
+    default: charts
+  git-push:
+    description: Push version bump commit and tags
+    required: false
+    default: "true"
+  dry-run:
+    description: Print what would happen without making any changes
+    required: false
+    default: "false"
+  changelog:
+    description: Append release entry to CHANGELOG.md per chart
+    required: false
+    default: "true"
+  github-release:
+    description: Create a GitHub Release for each chart
+    required: false
+    default: "false"
+  github-token:
+    description: GitHub token for creating releases
+    required: false
+  tag-prefix:
+    description: Prefix for git tags
+    required: false
+    default: ""
+
+runs:
+  using: docker
+  image: ghcr.io/rmcneill/helm-semver:latest
+  args:
+    - release
+    - --registry=${{ inputs.registry }}
+    - --registry-type=${{ inputs.registry-type }}
+    - --registry-username=${{ inputs.registry-username }}
+    - --registry-password=${{ inputs.registry-password }}
+    - --charts-dir=${{ inputs.charts-dir }}
+    - --git-push=${{ inputs.git-push }}
+    - --dry-run=${{ inputs.dry-run }}
+    - --changelog=${{ inputs.changelog }}
+    - --github-release=${{ inputs.github-release }}
+    - --github-token=${{ inputs.github-token }}
+    - --tag-prefix=${{ inputs.tag-prefix }}
+
+branding:
+  icon: package
+  color: blue
