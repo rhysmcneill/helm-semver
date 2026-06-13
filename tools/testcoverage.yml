@@ -1,11 +1,12 @@
-coverage:
-  threshold:
-    file: 50
-    package: 50
-    total: 60
+profile: coverage.out
+
+threshold:
+  file: 50
+  package: 50
+  total: 60
 
 # Files excluded from coverage checks (match codecov.yml ignores).
 exclude:
   paths:
-    - e2e/
-    - cmd/helm-semver/main.go
+    - ^e2e/
+    - ^cmd/helm-semver/main\.go$
