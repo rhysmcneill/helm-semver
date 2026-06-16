@@ -139,8 +139,7 @@ jobs:
           TAG: ${{ needs.release-please.outputs.tag_name }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          MAJOR="v${TAG#v}"
-          MAJOR="v${MAJOR%%.*}"
+          MAJOR="${TAG%%.*}"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           # Tag against the current SHA directly — the release tag isn't fetched
