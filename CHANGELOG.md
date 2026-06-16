@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/rhysmcneill/helm-semver/compare/v1.0.0...v1.0.1) (2026-06-16)
+
+
+### Bug Fixes
+
+* **action:** solve docker suffix issue in action.yml to make helm-semver discoverable ([#11](https://github.com/rhysmcneill/helm-semver/issues/11)) ([9e23868](https://github.com/rhysmcneill/helm-semver/commit/9e238684e8dd7f537eb8311efebad7bf1d9c9071))
+
 ## 1.0.0 (2026-06-13)
 
 
