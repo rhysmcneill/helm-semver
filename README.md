@@ -4,7 +4,7 @@
 
 <h1><strong>Welcome to helm-semver</strong></h1>
 
-<p>Semver release automation for Helm chart monorepos, single helm charts and everything in between.<br>
+<p>Semver release automation for Helm chart monorepos, single Helm charts and everything in-between.<br>
 helm-semver bumps chart versions from conventional commits, packages and pushes to any OCI registry.<br>
 Works as a GitHub Action or standalone Docker image on any CI platform.</p>
 
