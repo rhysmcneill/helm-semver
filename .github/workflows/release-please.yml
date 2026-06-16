@@ -143,5 +143,7 @@ jobs:
           MAJOR="v${MAJOR%%.*}"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag -f "${MAJOR}" "${TAG}"
+          # Tag against the current SHA directly — the release tag isn't fetched
+          # in the shallow clone so resolving it by name would fail.
+          git tag -f "${MAJOR}" "${{ github.sha }}"
           git push origin "${MAJOR}" --force
