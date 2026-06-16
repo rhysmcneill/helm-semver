@@ -2,10 +2,10 @@
 
 <img src=".github/assets/banner.png" alt="helm-semver banner" width="100%">
 
-<h1><strong>helm-semver</strong></h1>
+<h1><strong>Welcome to helm-semver</strong></h1>
 
-<p>Semver release automation for Helm chart monorepos.<br>
-Bumps chart versions from conventional commits, packages and pushes to any OCI registry.<br>
+<p>Semver release automation for Helm chart monorepos, single helm charts and everything in between.<br>
+helm-semver bumps chart versions from conventional commits, packages and pushes to any OCI registry.<br>
 Works as a GitHub Action or standalone Docker image on any CI platform.</p>
 
 <br>
