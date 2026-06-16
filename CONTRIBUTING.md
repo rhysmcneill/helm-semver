@@ -19,7 +19,7 @@ Thank you for your interest in contributing to helm-semver! This document covers
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/rmcneill/helm-semver.git
+git clone https://github.com/rhysmcneill/helm-semver.git
 cd helm-semver
 
 # 2. Install pre-commit (one-time, per machine)

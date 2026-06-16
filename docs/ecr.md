@@ -83,7 +83,7 @@ jobs:
           echo "::add-mask::${TOKEN}"
           echo "token=${TOKEN}" >> $GITHUB_OUTPUT
 
-      - uses: rmcneill/helm-semver@v1
+      - uses: rhysmcneill/helm-semver@v1
         with:
           registry: oci://123456789012.dkr.ecr.eu-west-1.amazonaws.com/helm-charts
           registry-type: oci
@@ -121,7 +121,7 @@ jobs:
 
 ```yaml
 release-charts:
-  image: ghcr.io/rmcneill/helm-semver:latest
+  image: ghcr.io/rhysmcneill/helm-semver:latest
   id_tokens:
     AWS_TOKEN:
       aud: sts.amazonaws.com
@@ -159,7 +159,7 @@ pipelines:
       - step:
           name: Release Charts
           oidc: true
-          image: ghcr.io/rmcneill/helm-semver:latest
+          image: ghcr.io/rhysmcneill/helm-semver:latest
           script:
             - pipe: atlassian/aws-assume-role-with-web-identity:1.0.0
               variables:
@@ -188,7 +188,7 @@ picks up the role automatically from the instance metadata service (IMDS):
     echo "::add-mask::${TOKEN}"
     echo "token=${TOKEN}" >> $GITHUB_OUTPUT
 
-- uses: rmcneill/helm-semver@v1
+- uses: rhysmcneill/helm-semver@v1
   with:
     registry: oci://123456789012.dkr.ecr.eu-west-1.amazonaws.com/helm-charts
     registry-username: AWS

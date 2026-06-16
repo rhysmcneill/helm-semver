@@ -85,7 +85,7 @@ jobs:
           echo "::add-mask::${TOKEN}"
           echo "token=${TOKEN}" >> $GITHUB_OUTPUT
 
-      - uses: rmcneill/helm-semver@v1
+      - uses: rhysmcneill/helm-semver@v1
         with:
           registry: oci://myregistry.azurecr.io/helm-charts
           registry-type: oci
@@ -103,7 +103,7 @@ none of these are credentials, they are identifiers only.
 
 ```yaml
 release-charts:
-  image: ghcr.io/rmcneill/helm-semver:latest
+  image: ghcr.io/rhysmcneill/helm-semver:latest
   before_script:
     - apk add --no-cache azure-cli
     - az login --service-principal
@@ -137,7 +137,7 @@ pipelines:
     main:
       - step:
           name: Release Charts
-          image: ghcr.io/rmcneill/helm-semver:latest
+          image: ghcr.io/rhysmcneill/helm-semver:latest
           script:
             - az login --service-principal
                 --username $AZURE_CLIENT_ID
@@ -177,7 +177,7 @@ automatically:
     echo "::add-mask::${TOKEN}"
     echo "token=${TOKEN}" >> $GITHUB_OUTPUT
 
-- uses: rmcneill/helm-semver@v1
+- uses: rhysmcneill/helm-semver@v1
   with:
     registry: oci://myregistry.azurecr.io/helm-charts
     registry-username: "00000000-0000-0000-0000-000000000000"

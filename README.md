@@ -10,12 +10,12 @@ Works as a GitHub Action or standalone Docker image on any CI platform.</p>
 
 <br>
 
-[![codecov](https://codecov.io/gh/rmcneill/helm-semver/branch/main/graph/badge.svg)](https://codecov.io/gh/rmcneill/helm-semver)
+[![codecov](https://codecov.io/gh/rhysmcneill/helm-semver/branch/main/graph/badge.svg)](https://codecov.io/gh/rhysmcneill/helm-semver)
 [![Go](https://img.shields.io/badge/Go-1.26+-00ADD8?logo=go)](https://golang.org)
-[![Version](https://img.shields.io/github/v/tag/rmcneill/helm-semver)](https://github.com/rmcneill/helm-semver/releases)
+[![Version](https://img.shields.io/github/v/tag/rhysmcneill/helm-semver)](https://github.com/rhysmcneill/helm-semver/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/rmcneill/helm-semver?style=flat&color=yellow&logo=github)](https://github.com/rmcneill/helm-semver)
-[![Forks](https://img.shields.io/github/forks/rmcneill/helm-semver)](https://github.com/rmcneill/helm-semver/forks)
+[![Stars](https://img.shields.io/github/stars/rhysmcneill/helm-semver?style=flat&color=yellow&logo=github)](https://github.com/rhysmcneill/helm-semver)
+[![Forks](https://img.shields.io/github/forks/rhysmcneill/helm-semver)](https://github.com/rhysmcneill/helm-semver/forks)
 
 <br>
 
@@ -62,27 +62,27 @@ Every chart that has `fix:`, `feat:`, or `feat!:` commits since its last release
 
 ```bash
 # Linux / macOS — download the binary directly
-curl -L https://github.com/rmcneill/helm-semver/releases/latest/download/helm-semver-linux-amd64 \
+curl -L https://github.com/rhysmcneill/helm-semver/releases/latest/download/helm-semver-linux-amd64 \
   -o /usr/local/bin/helm-semver && chmod +x /usr/local/bin/helm-semver
 
 # Go install
-go install github.com/rmcneill/helm-semver/cmd/helm-semver@latest
+go install github.com/rhysmcneill/helm-semver/cmd/helm-semver@latest
 
 # Docker
-docker run --rm -v $(pwd):/workspace ghcr.io/rmcneill/helm-semver:latest \
+docker run --rm -v $(pwd):/workspace ghcr.io/rhysmcneill/helm-semver:latest \
   release --registry oci://ghcr.io/my-org/helm-charts
 ```
 
 **GitHub Action:**
 
 ```yaml
-- uses: rmcneill/helm-semver@v1
+- uses: rhysmcneill/helm-semver@v1
   with:
     registry: oci://ghcr.io/${{ github.repository_owner }}/helm-charts
     github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-> Binaries for Linux, macOS, and Windows on every [release](https://github.com/rmcneill/helm-semver/releases).
+> Binaries for Linux, macOS, and Windows on every [release](https://github.com/rhysmcneill/helm-semver/releases).
 
 ---
 
@@ -100,7 +100,7 @@ charts/
 
 ```yaml
 # .github/workflows/release.yml
-- uses: rmcneill/helm-semver@v1
+- uses: rhysmcneill/helm-semver@v1
   with:
     registry: oci://ghcr.io/${{ github.repository_owner }}/helm-charts
     changelog: "true"
@@ -113,7 +113,7 @@ Each chart is tagged independently (`observability-v0.2.0`, `my-service-v1.3.1`)
 ### Single chart repo
 
 ```yaml
-- uses: rmcneill/helm-semver@v1
+- uses: rhysmcneill/helm-semver@v1
   with:
     charts-dir: .        # Chart.yaml is at the repo root
     registry: oci://ghcr.io/my-org/helm-charts
@@ -123,7 +123,7 @@ Each chart is tagged independently (`observability-v0.2.0`, `my-service-v1.3.1`)
 
 ```yaml
 release-charts:
-  image: ghcr.io/rmcneill/helm-semver:latest
+  image: ghcr.io/rhysmcneill/helm-semver:latest
   script:
     - helm-semver release
         --registry oci://registry.gitlab.com/my-group/helm-charts
@@ -145,7 +145,7 @@ pipelines:
       - step:
           name: Release Charts
           oidc: true
-          image: ghcr.io/rmcneill/helm-semver:latest
+          image: ghcr.io/rhysmcneill/helm-semver:latest
           script:
             - pipe: atlassian/aws-assume-role-with-web-identity:1.0.0
               variables:
@@ -199,7 +199,7 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
         # Use the Docker image directly so no binary install is needed
         env:
-          DOCKER_IMAGE: ghcr.io/rmcneill/helm-semver:latest
+          DOCKER_IMAGE: ghcr.io/rhysmcneill/helm-semver:latest
 
       - name: Post preview comment
         uses: actions/github-script@v7
@@ -346,7 +346,7 @@ helm-semver release \
 | [ACR / workload identity](docs/acr.md) | GitHub Actions OIDC, service principal, AKS pod identity |
 | [Contributing](CONTRIBUTING.md) | How to build, test, and submit changes |
 | [Changelog](CHANGELOG.md) | Release history |
-| [Releases](https://github.com/rmcneill/helm-semver/releases) | Binary downloads |
+| [Releases](https://github.com/rhysmcneill/helm-semver/releases) | Binary downloads |
 
 ---
 
@@ -354,12 +354,12 @@ helm-semver release \
 
 Thank you to everyone who has contributed to helm-semver!
 
-[![Contributors](https://contrib.rocks/image?repo=rmcneill/helm-semver&max=100)](https://github.com/rmcneill/helm-semver/graphs/contributors)
+[![Contributors](https://contrib.rocks/image?repo=rhysmcneill/helm-semver&max=100)](https://github.com/rhysmcneill/helm-semver/graphs/contributors)
 
 Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
 
 ---
 
 <div align="center">
-MIT License &nbsp;·&nbsp; <a href="https://github.com/rmcneill/helm-semver/issues">Report a bug</a> &nbsp;·&nbsp; <a href="https://github.com/rmcneill/helm-semver/issues">Request a feature</a>
+MIT License &nbsp;·&nbsp; <a href="https://github.com/rhysmcneill/helm-semver/issues">Report a bug</a> &nbsp;·&nbsp; <a href="https://github.com/rhysmcneill/helm-semver/issues">Request a feature</a>
 </div>
