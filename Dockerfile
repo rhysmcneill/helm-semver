@@ -1,14 +1,18 @@
-FROM golang:1.26-alpine AS builder
+# Run the builder on the native platform so go build never runs under QEMU emulation.
+# TARGETOS/TARGETARCH are injected by Docker Buildx for cross-compilation.
+FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS builder
 WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
 
+ARG TARGETOS=linux
+ARG TARGETARCH=amd64
 ARG VERSION=dev
 ARG COMMIT=none
 ARG BUILD_DATE=unknown
 
-RUN CGO_ENABLED=0 go build \
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build \
   -ldflags "-s -w \
     -X github.com/rmcneill/helm-semver/internal/version.Version=${VERSION} \
     -X github.com/rmcneill/helm-semver/internal/version.Commit=${COMMIT} \
