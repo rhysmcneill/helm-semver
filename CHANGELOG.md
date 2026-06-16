@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.3](https://github.com/rhysmcneill/helm-semver/compare/v1.0.2...v1.0.3) (2026-06-16)
+
+
+### Bug Fixes
+
+* **docker:** update builder to Go 1.26 and use composite action for correct workspace permissions ([#15](https://github.com/rhysmcneill/helm-semver/issues/15)) ([b7353e5](https://github.com/rhysmcneill/helm-semver/commit/b7353e5881075e388db31617cdff382c4ba1c29a))
+
+## [1.0.2](https://github.com/rhysmcneill/helm-semver/compare/v1.0.1...v1.0.2) (2026-06-16)
+
+
+### Bug Fixes
+
+* **action:** add composition to gh action ci ([#13](https://github.com/rhysmcneill/helm-semver/issues/13)) ([46af7ed](https://github.com/rhysmcneill/helm-semver/commit/46af7ed38fbf70e101c5daf823db2f5e095f0c30))
+
 ## [1.0.1](https://github.com/rhysmcneill/helm-semver/compare/v1.0.0...v1.0.1) (2026-06-16)
 
 
