@@ -1,3 +1,5 @@
+# This file is used to define the GitHub Action for the helm-semver tool.
+
 name: helm-semver
 description: >
   Semver release automation for Helm chart monorepos. Bumps chart versions
