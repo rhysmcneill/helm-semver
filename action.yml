@@ -1,8 +1,6 @@
-# This file is used to define the GitHub Action for the helm-semver tool.
-
 name: helm-semver
 description: >
-  Semver release automation for Helm chart monorepos. Bumps chart versions
+  Semver release automation for Helm charts. Bumps chart versions
   from conventional commits, packages and pushes to any OCI registry.
   Works as a GitHub Action or standalone Docker image on any CI platform.
 
@@ -49,21 +47,33 @@ inputs:
     default: ""
 
 runs:
-  using: docker
-  image: docker://ghcr.io/rhysmcneill/helm-semver:latest
-  args:
-    - release
-    - --registry=${{ inputs.registry }}
-    - --registry-type=${{ inputs.registry-type }}
-    - --registry-username=${{ inputs.registry-username }}
-    - --registry-password=${{ inputs.registry-password }}
-    - --charts-dir=${{ inputs.charts-dir }}
-    - --git-push=${{ inputs.git-push }}
-    - --dry-run=${{ inputs.dry-run }}
-    - --changelog=${{ inputs.changelog }}
-    - --github-release=${{ inputs.github-release }}
-    - --github-token=${{ inputs.github-token }}
-    - --tag-prefix=${{ inputs.tag-prefix }}
+  using: composite
+  steps:
+    - name: Run helm-semver
+      shell: bash
+      run: |
+        docker run --rm \
+          --user "$(id -u):$(id -g)" \
+          -v "${{ github.workspace }}:/workspace" \
+          -w /workspace \
+          -e GITHUB_ACTIONS \
+          -e GITHUB_ACTOR \
+          -e GITHUB_REPOSITORY \
+          -e GITHUB_REPOSITORY_OWNER \
+          -e HOME=/tmp \
+          ghcr.io/rhysmcneill/helm-semver:latest \
+          release \
+          --registry="${{ inputs.registry }}" \
+          --registry-type="${{ inputs.registry-type }}" \
+          --registry-username="${{ inputs.registry-username }}" \
+          --registry-password="${{ inputs.registry-password }}" \
+          --charts-dir="${{ inputs.charts-dir }}" \
+          --git-push="${{ inputs.git-push }}" \
+          --dry-run="${{ inputs.dry-run }}" \
+          --changelog="${{ inputs.changelog }}" \
+          --github-release="${{ inputs.github-release }}" \
+          --github-token="${{ inputs.github-token }}" \
+          --tag-prefix="${{ inputs.tag-prefix }}"
 
 branding:
   icon: package
