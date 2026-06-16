@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/rhysmcneill/helm-semver/compare/v1.0.3...v1.0.4) (2026-06-16)
+
+
+### Bug Fixes
+
+* **release,docker:** resolve tag-major and Docker QEMU build issues ([#17](https://github.com/rhysmcneill/helm-semver/issues/17)) ([2da3c3e](https://github.com/rhysmcneill/helm-semver/commit/2da3c3e4d3785cd7ed4c039c6973539e956374d0))
+
 ## [1.0.3](https://github.com/rhysmcneill/helm-semver/compare/v1.0.2...v1.0.3) (2026-06-16)
 
 
