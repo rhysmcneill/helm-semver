@@ -11,6 +11,7 @@ import (
 	"github.com/go-git/go-git/v5/config"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
+	"github.com/go-git/go-git/v5/plumbing/storer"
 )
 
 // Client wraps a go-git repository.
@@ -79,13 +80,10 @@ func (c *Client) CommitsSince(tag, pathFilter string) ([]string, error) {
 	}
 
 	logOpts := &gogit.LogOptions{
+		Order: gogit.LogOrderCommitterTime,
 		PathFilter: func(path string) bool {
 			return strings.HasPrefix(path, pathFilter)
 		},
-	}
-
-	if since != nil {
-		logOpts.From = *since
 	}
 
 	iter, err := c.repo.Log(logOpts)
@@ -94,14 +92,11 @@ func (c *Client) CommitsSince(tag, pathFilter string) ([]string, error) {
 	}
 
 	var subjects []string
-	first := true
 	err = iter.ForEach(func(commit *object.Commit) error {
-		// Skip the tagged commit itself when a tag is given.
-		if first && since != nil && commit.Hash == *since {
-			first = false
-			return nil
+		// Stop when we reach the tagged commit (exclusive).
+		if since != nil && commit.Hash == *since {
+			return storer.ErrStop
 		}
-		first = false
 		// Only the subject line (first line of message).
 		subject := strings.SplitN(strings.TrimSpace(commit.Message), "\n", 2)[0]
 		subjects = append(subjects, subject)

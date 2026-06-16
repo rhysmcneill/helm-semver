@@ -48,7 +48,7 @@ inputs:
 
 runs:
   using: docker
-  image: ghcr.io/rhysmcneill/helm-semver:latest
+  image: docker://ghcr.io/rhysmcneill/helm-semver:latest
   args:
     - release
     - --registry=${{ inputs.registry }}
