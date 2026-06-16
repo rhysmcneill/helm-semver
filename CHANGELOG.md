@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/rhysmcneill/helm-semver/compare/v1.0.1...v1.0.2) (2026-06-16)
+
+
+### Bug Fixes
+
+* **action:** add composition to gh action ci ([#13](https://github.com/rhysmcneill/helm-semver/issues/13)) ([46af7ed](https://github.com/rhysmcneill/helm-semver/commit/46af7ed38fbf70e101c5daf823db2f5e095f0c30))
+
 ## [1.0.1](https://github.com/rhysmcneill/helm-semver/compare/v1.0.0...v1.0.1) (2026-06-16)
 
 
