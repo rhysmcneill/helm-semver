@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.5](https://github.com/rhysmcneill/helm-semver/compare/v1.0.4...v1.0.5) (2026-06-17)
+
+
+### Bug Fixes
+
+* **git:** authenticate git push with GitHub token ([#20](https://github.com/rhysmcneill/helm-semver/issues/20)) ([ff3147a](https://github.com/rhysmcneill/helm-semver/commit/ff3147a1afd8f1abf4704d849c6dc043c9ef5227))
+
 ## [1.0.4](https://github.com/rhysmcneill/helm-semver/compare/v1.0.3...v1.0.4) (2026-06-16)
 
 
