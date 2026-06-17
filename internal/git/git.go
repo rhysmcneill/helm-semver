@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+	"time"
 
 	gogit "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/config"
@@ -133,6 +134,7 @@ func (c *Client) Commit(message, authorName, authorEmail string) error {
 		Author: &object.Signature{
 			Name:  authorName,
 			Email: authorEmail,
+			When:  time.Now(),
 		},
 	}
 

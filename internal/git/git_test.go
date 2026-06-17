@@ -4,8 +4,10 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	gogit "github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/config"
 	"github.com/go-git/go-git/v5/plumbing/object"
 )
 
@@ -117,5 +119,87 @@ func TestStageAndCommit(t *testing.T) {
 	commit, _ := c.repo.CommitObject(head.Hash())
 	if commit.Message != "chore(app): release v0.2.0 [skip ci]" {
 		t.Errorf("commit message = %q", commit.Message)
+	}
+}
+
+func TestCommit_TimestampIsRecent(t *testing.T) {
+	c, dir := initTestRepo(t)
+
+	newFile := filepath.Join(dir, "foo.txt")
+	_ = os.WriteFile(newFile, []byte("x"), 0o600)
+	_ = c.StageFile("foo.txt")
+
+	before := time.Now().Add(-time.Second)
+	if err := c.Commit("test: check timestamp", "bot", "bot@example.com"); err != nil {
+		t.Fatalf("Commit() error = %v", err)
+	}
+	after := time.Now().Add(time.Second)
+
+	head, _ := c.repo.Head()
+	commit, _ := c.repo.CommitObject(head.Hash())
+
+	if commit.Author.When.Before(before) || commit.Author.When.After(after) {
+		t.Errorf("commit timestamp %v outside expected range [%v, %v]",
+			commit.Author.When, before, after)
+	}
+}
+
+func TestRemoteIsHTTPS(t *testing.T) {
+	tests := []struct {
+		name string
+		url  string
+		want bool
+	}{
+		{"https", "https://github.com/user/repo.git", true},
+		{"http", "http://localhost/repo.git", true},
+		{"ssh scp-style", "git@github.com:user/repo.git", false},
+		{"ssh url", "ssh://git@github.com/user/repo.git", false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c, _ := initTestRepo(t)
+			_, err := c.repo.CreateRemote(&config.RemoteConfig{
+				Name: "testremote",
+				URLs: []string{tt.url},
+			})
+			if err != nil {
+				t.Fatalf("create remote: %v", err)
+			}
+			got := c.remoteIsHTTPS("testremote")
+			if got != tt.want {
+				t.Errorf("remoteIsHTTPS(%q) = %v, want %v", tt.url, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRemoteIsHTTPS_UnknownRemote(t *testing.T) {
+	c, _ := initTestRepo(t)
+	// Non-existent remote should default to true (assume HTTPS).
+	if !c.remoteIsHTTPS("nonexistent") {
+		t.Error("remoteIsHTTPS(nonexistent) = false, want true")
+	}
+}
+
+func TestPush_LocalBareRemote(t *testing.T) {
+	c, dir := initTestRepo(t)
+	addCommit(t, c, dir, "charts/app/Chart.yaml", "feat: something")
+
+	bareDir := t.TempDir()
+	if _, err := gogit.PlainInit(bareDir, true); err != nil {
+		t.Fatalf("init bare repo: %v", err)
+	}
+
+	if _, err := c.repo.CreateRemote(&config.RemoteConfig{
+		Name: "origin",
+		URLs: []string{bareDir},
+	}); err != nil {
+		t.Fatalf("create remote: %v", err)
+	}
+
+	// Push with no token to a local file remote — should succeed without auth.
+	if err := c.Push("origin", ""); err != nil {
+		t.Fatalf("Push() error = %v", err)
 	}
 }
