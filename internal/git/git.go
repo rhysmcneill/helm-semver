@@ -12,6 +12,7 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/plumbing/storer"
+	"github.com/go-git/go-git/v5/plumbing/transport/http"
 )
 
 // Client wraps a go-git repository.
@@ -156,16 +157,38 @@ func (c *Client) Tag(name string) error {
 }
 
 // Push pushes the current branch and all tags to the named remote.
-func (c *Client) Push(remote string) error {
-	err := c.repo.Push(&gogit.PushOptions{
+// If token is non-empty and the remote URL uses HTTPS, the token is used as
+// Basic Auth ("x-access-token" / token). For SSH remotes the token is ignored
+// — the host's SSH agent handles authentication instead.
+func (c *Client) Push(remote, token string) error {
+	opts := &gogit.PushOptions{
 		RemoteName: remote,
 		RefSpecs: []config.RefSpec{
 			"refs/heads/*:refs/heads/*",
 			"refs/tags/*:refs/tags/*",
 		},
-	})
+	}
+	if token != "" && c.remoteIsHTTPS(remote) {
+		opts.Auth = &http.BasicAuth{
+			Username: "x-access-token",
+			Password: token,
+		}
+	}
+	err := c.repo.Push(opts)
 	if err != nil && err != gogit.NoErrAlreadyUpToDate {
 		return fmt.Errorf("pushing to %s: %w", remote, err)
 	}
 	return nil
+}
+
+// remoteIsHTTPS returns true when the first URL of the named remote uses
+// http:// or https://.  SSH remotes (git@ or ssh://) return false.
+func (c *Client) remoteIsHTTPS(name string) bool {
+	r, err := c.repo.Remote(name)
+	if err != nil || len(r.Config().URLs) == 0 {
+		// Can't determine — assume HTTPS so we at least try to auth.
+		return true
+	}
+	u := r.Config().URLs[0]
+	return strings.HasPrefix(u, "https://") || strings.HasPrefix(u, "http://")
 }

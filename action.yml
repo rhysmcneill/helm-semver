@@ -39,8 +39,9 @@ inputs:
     required: false
     default: "false"
   github-token:
-    description: GitHub token for creating releases
+    description: GitHub token for git push and creating releases
     required: false
+    default: ${{ github.token }}
   tag-prefix:
     description: Prefix for git tags
     required: false
@@ -60,6 +61,7 @@ runs:
           -e GITHUB_ACTOR \
           -e GITHUB_REPOSITORY \
           -e GITHUB_REPOSITORY_OWNER \
+          -e GITHUB_TOKEN="${{ inputs.github-token }}" \
           -e HOME=/tmp \
           ghcr.io/rhysmcneill/helm-semver:latest \
           release \
@@ -72,7 +74,7 @@ runs:
           --dry-run="${{ inputs.dry-run }}" \
           --changelog="${{ inputs.changelog }}" \
           --github-release="${{ inputs.github-release }}" \
-          --github-token="${{ inputs.github-token }}" \
+          --git-token="${{ inputs.github-token }}" \
           --tag-prefix="${{ inputs.tag-prefix }}"
 
 branding:

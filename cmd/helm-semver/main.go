@@ -62,7 +62,7 @@ type releaseOptions struct {
 	dryRun        bool
 	changelog     bool
 	githubRelease bool
-	githubToken   string
+	gitToken      string
 	githubOwner   string
 	githubRepo    string
 	tagPrefix     string
@@ -93,7 +93,12 @@ and pushes it to the configured registry.`,
 	cmd.Flags().BoolVar(&opts.dryRun, "dry-run", false, "Print what would happen without making any changes")
 	cmd.Flags().BoolVar(&opts.changelog, "changelog", true, "Append release entry to CHANGELOG.md per chart")
 	cmd.Flags().BoolVar(&opts.githubRelease, "github-release", false, "Create a GitHub Release for each chart")
-	cmd.Flags().StringVar(&opts.githubToken, "github-token", os.Getenv("GITHUB_TOKEN"), "GitHub token (env: GITHUB_TOKEN)")
+	cmd.Flags().StringVar(&opts.gitToken, "git-token", os.Getenv("GITHUB_TOKEN"), "Token for git push authentication (env: GITHUB_TOKEN)")
+	// --github-token is a deprecated alias kept for backwards compatibility.
+	cmd.Flags().StringVar(&opts.gitToken, "github-token", os.Getenv("GITHUB_TOKEN"), "Deprecated: use --git-token")
+	if err := cmd.Flags().MarkHidden("github-token"); err != nil {
+		panic(err)
+	}
 	cmd.Flags().StringVar(&opts.githubOwner, "github-owner", os.Getenv("GITHUB_REPOSITORY_OWNER"), "GitHub repository owner")
 	cmd.Flags().StringVar(&opts.githubRepo, "github-repo", "", "GitHub repository name")
 	cmd.Flags().StringVar(&opts.tagPrefix, "tag-prefix", "", "Prefix for git tags, e.g. 'charts/'")
@@ -147,7 +152,7 @@ func runRelease(cmd *cobra.Command, opts *releaseOptions) error {
 
 	if released > 0 && opts.gitPush && !opts.dryRun {
 		_, _ = fmt.Fprintln(cmd.OutOrStdout(), "Pushing commits and tags…")
-		if err := gitClient.Push("origin"); err != nil {
+		if err := gitClient.Push("origin", opts.gitToken); err != nil {
 			return fmt.Errorf("git push: %w", err)
 		}
 	}
@@ -247,9 +252,9 @@ func releaseChart(cmd *cobra.Command, opts *releaseOptions, gitClient *igit.Clie
 	_, _ = fmt.Fprintf(out, "    tagged %s\n", newTag)
 
 	// GitHub Release.
-	if opts.githubRelease && opts.githubToken != "" {
+	if opts.githubRelease && opts.gitToken != "" {
 		notes := release.BuildReleaseNotes(commits)
-		rc := release.New(opts.githubToken, opts.githubOwner, opts.githubRepo)
+		rc := release.New(opts.gitToken, opts.githubOwner, opts.githubRepo)
 		url, err := rc.CreateRelease(context.Background(), newTag, chartName+" "+newVersion, notes)
 		if err != nil {
 			return fmt.Errorf("creating GitHub release for %s: %w", newTag, err)
