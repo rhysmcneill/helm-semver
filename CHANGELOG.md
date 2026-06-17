@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.6](https://github.com/rhysmcneill/helm-semver/compare/v1.0.5...v1.0.6) (2026-06-17)
+
+
+### Bug Fixes
+
+* **git:** add current time to all git-push related commands  ([#23](https://github.com/rhysmcneill/helm-semver/issues/23)) ([52ae320](https://github.com/rhysmcneill/helm-semver/commit/52ae320dccdf8dda6fce68bf75b8b6dc63efe8ef))
+
 ## [1.0.5](https://github.com/rhysmcneill/helm-semver/compare/v1.0.4...v1.0.5) (2026-06-17)
 
 
