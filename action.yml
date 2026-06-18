@@ -1,7 +1,6 @@
 name: helm-semver
 description: >
-  Semver release automation for Helm charts. Bumps chart versions
-  from conventional commits, packages and pushes to any OCI registry.
+  Semver release automation for Helm charts. Bumps chart versions from conventional commits and send them to a OCI registry
 inputs:
   registry:
     description: Registry URL (e.g. oci://ghcr.io/my-org/helm-charts)
