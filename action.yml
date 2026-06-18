@@ -2,8 +2,6 @@ name: helm-semver
 description: >
   Semver release automation for Helm charts. Bumps chart versions
   from conventional commits, packages and pushes to any OCI registry.
-  Works as a GitHub Action or standalone Docker image on any CI platform.
-
 inputs:
   registry:
     description: Registry URL (e.g. oci://ghcr.io/my-org/helm-charts)
