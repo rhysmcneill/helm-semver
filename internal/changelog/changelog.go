@@ -93,7 +93,7 @@ func Append(path, version string, date time.Time, commits []string) error {
 	section := render(e)
 
 	var existing string
-	data, err := os.ReadFile(path) //nolint:gosec
+	data, err := os.ReadFile(path) // #nosec
 	if err != nil && !os.IsNotExist(err) {
 		return fmt.Errorf("reading %s: %w", path, err)
 	}
