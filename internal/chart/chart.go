@@ -61,7 +61,7 @@ func BumpVersion(path, newVersion string) error {
 		return fmt.Errorf("marshalling %s: %w", path, err)
 	}
 
-	if err := os.WriteFile(path, out, 0o644); err != nil { //nolint:gosec
+	if err := os.WriteFile(path, out, 0o644); err != nil { // #nosec
 		return fmt.Errorf("writing %s: %w", path, err)
 	}
 
