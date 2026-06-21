@@ -113,7 +113,7 @@ func Append(path, version string, date time.Time, commits []string) error {
 		out = section + existing
 	}
 
-	if err := os.WriteFile(path, []byte(out), 0o644); err != nil { //nolint:gosec
+	if err := os.WriteFile(path, []byte(out), 0o644); err != nil { // #nosec
 		return fmt.Errorf("writing %s: %w", path, err)
 	}
 	return nil
