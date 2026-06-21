@@ -10,11 +10,11 @@ import (
 
 // Entry represents a single release entry to append.
 type Entry struct {
-	Version string
-	Date    time.Time
-	Added   []string
-	Fixed   []string
-	Changed []string
+	Version  string
+	Date     time.Time
+	Added    []string
+	Fixed    []string
+	Changed  []string
 	Breaking []string
 }
 
@@ -36,7 +36,7 @@ func parseCommits(commits []string, e *Entry) {
 			e.Changed = append(e.Changed, msg)
 		case isType(msg, "refactor", false):
 			e.Changed = append(e.Changed, msg)
-		// chore, ci, docs, style, test, build → excluded from changelog
+			// chore, ci, docs, style, test, build → excluded from changelog
 		}
 	}
 }

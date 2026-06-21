@@ -15,7 +15,7 @@ type BumpType int
 
 const (
 	// BumpNone means no releasable commits were found.
-	BumpNone  BumpType = iota
+	BumpNone BumpType = iota
 	// BumpPatch is triggered by fix: commits.
 	BumpPatch
 	// BumpMinor is triggered by feat: commits.
