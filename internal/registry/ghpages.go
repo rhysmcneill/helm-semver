@@ -142,7 +142,7 @@ func copyFile(src, dst string) error {
 	if err != nil {
 		return fmt.Errorf("reading %s: %w", src, err)
 	}
-	if err := os.WriteFile(dst, data, 0o644); err != nil { //nolint:gosec
+	if err := os.WriteFile(dst, data, 0o644); err != nil { // #nosec
 		return fmt.Errorf("writing %s: %w", dst, err)
 	}
 	return nil
