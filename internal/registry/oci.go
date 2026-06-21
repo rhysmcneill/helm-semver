@@ -56,7 +56,7 @@ func (p *OCIPublisher) Push(chartDir, version string) error {
 	}
 
 	// Read the packaged chart.
-	data, err := os.ReadFile(tgzPath) //nolint:gosec
+	data, err := os.ReadFile(tgzPath) // #nosec
 	if err != nil {
 		return fmt.Errorf("reading packaged chart: %w", err)
 	}
