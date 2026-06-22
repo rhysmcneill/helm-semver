@@ -11,13 +11,13 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/rmcneill/helm-semver/internal/changelog"
-	"github.com/rmcneill/helm-semver/internal/chart"
-	igit "github.com/rmcneill/helm-semver/internal/git"
-	"github.com/rmcneill/helm-semver/internal/registry"
-	"github.com/rmcneill/helm-semver/internal/release"
-	"github.com/rmcneill/helm-semver/internal/semver"
-	"github.com/rmcneill/helm-semver/internal/version"
+	"github.com/rhysmcneill/helm-semver/internal/changelog"
+	"github.com/rhysmcneill/helm-semver/internal/chart"
+	igit "github.com/rhysmcneill/helm-semver/internal/git"
+	"github.com/rhysmcneill/helm-semver/internal/registry"
+	"github.com/rhysmcneill/helm-semver/internal/release"
+	"github.com/rhysmcneill/helm-semver/internal/semver"
+	"github.com/rhysmcneill/helm-semver/internal/version"
 )
 
 func main() {

@@ -1,4 +1,4 @@
-module github.com/rmcneill/helm-semver
+module github.com/rhysmcneill/helm-semver
 
 go 1.26.2
 
