@@ -42,7 +42,7 @@ func (p *ChartMuseumPublisher) Push(chartDir, _ string) error {
 		return fmt.Errorf("packaging chart %s: %w", ch.Name(), err)
 	}
 
-	f, err := os.Open(tgzPath) //nolint:gosec
+	f, err := os.Open(tgzPath) // #nosec
 	if err != nil {
 		return fmt.Errorf("opening packaged chart: %w", err)
 	}

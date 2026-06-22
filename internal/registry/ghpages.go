@@ -138,11 +138,11 @@ func MergeIndex(dst, src *helmrepo.IndexFile) {
 
 // copyFile copies src to dst.
 func copyFile(src, dst string) error {
-	data, err := os.ReadFile(src) //nolint:gosec
+	data, err := os.ReadFile(src) // #nosec
 	if err != nil {
 		return fmt.Errorf("reading %s: %w", src, err)
 	}
-	if err := os.WriteFile(dst, data, 0o644); err != nil { //nolint:gosec
+	if err := os.WriteFile(dst, data, 0o644); err != nil { // #nosec
 		return fmt.Errorf("writing %s: %w", dst, err)
 	}
 	return nil

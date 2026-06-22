@@ -10,11 +10,11 @@ import (
 
 // Entry represents a single release entry to append.
 type Entry struct {
-	Version string
-	Date    time.Time
-	Added   []string
-	Fixed   []string
-	Changed []string
+	Version  string
+	Date     time.Time
+	Added    []string
+	Fixed    []string
+	Changed  []string
 	Breaking []string
 }
 
@@ -36,7 +36,7 @@ func parseCommits(commits []string, e *Entry) {
 			e.Changed = append(e.Changed, msg)
 		case isType(msg, "refactor", false):
 			e.Changed = append(e.Changed, msg)
-		// chore, ci, docs, style, test, build → excluded from changelog
+			// chore, ci, docs, style, test, build → excluded from changelog
 		}
 	}
 }
@@ -93,7 +93,7 @@ func Append(path, version string, date time.Time, commits []string) error {
 	section := render(e)
 
 	var existing string
-	data, err := os.ReadFile(path) //nolint:gosec
+	data, err := os.ReadFile(path) // #nosec
 	if err != nil && !os.IsNotExist(err) {
 		return fmt.Errorf("reading %s: %w", path, err)
 	}
@@ -113,7 +113,7 @@ func Append(path, version string, date time.Time, commits []string) error {
 		out = section + existing
 	}
 
-	if err := os.WriteFile(path, []byte(out), 0o644); err != nil { //nolint:gosec
+	if err := os.WriteFile(path, []byte(out), 0o644); err != nil { // #nosec
 		return fmt.Errorf("writing %s: %w", path, err)
 	}
 	return nil

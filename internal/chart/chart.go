@@ -18,7 +18,7 @@ type Metadata struct {
 
 // Load reads a Chart.yaml file and returns its metadata.
 func Load(path string) (*Metadata, error) {
-	data, err := os.ReadFile(path) //nolint:gosec // path comes from controlled CLI input
+	data, err := os.ReadFile(path) // #nosec // path comes from controlled CLI input
 	if err != nil {
 		return nil, fmt.Errorf("reading %s: %w", path, err)
 	}
@@ -41,7 +41,7 @@ func Load(path string) (*Metadata, error) {
 // BumpVersion rewrites only the `version:` line in a Chart.yaml file,
 // preserving all other content (comments, field order, appVersion, etc.).
 func BumpVersion(path, newVersion string) error {
-	data, err := os.ReadFile(path) //nolint:gosec
+	data, err := os.ReadFile(path) // #nosec
 	if err != nil {
 		return fmt.Errorf("reading %s: %w", path, err)
 	}
@@ -61,7 +61,7 @@ func BumpVersion(path, newVersion string) error {
 		return fmt.Errorf("marshalling %s: %w", path, err)
 	}
 
-	if err := os.WriteFile(path, out, 0o644); err != nil { //nolint:gosec
+	if err := os.WriteFile(path, out, 0o644); err != nil { // #nosec
 		return fmt.Errorf("writing %s: %w", path, err)
 	}
 

@@ -43,7 +43,7 @@ func (c *Client) CreateRelease(ctx context.Context, tag, name, body string) (str
 
 // UploadAsset uploads a file as a release asset.
 func (c *Client) UploadAsset(ctx context.Context, releaseID int64, assetPath string) error {
-	f, err := os.Open(assetPath) //nolint:gosec
+	f, err := os.Open(assetPath) // #nosec
 	if err != nil {
 		return fmt.Errorf("opening asset %s: %w", assetPath, err)
 	}
