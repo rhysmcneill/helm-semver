@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.7](https://github.com/rhysmcneill/helm-semver/compare/v1.0.6...v1.0.7) (2026-06-22)
+
+
+### Bug Fixes
+
+* **project:** changed rmcneill to rhysmcneill across the project ([#37](https://github.com/rhysmcneill/helm-semver/issues/37)) ([54412cd](https://github.com/rhysmcneill/helm-semver/commit/54412cd69b34b6bf42c6df438e1cc16a9fe69319))
+
 ## [1.0.6](https://github.com/rhysmcneill/helm-semver/compare/v1.0.5...v1.0.6) (2026-06-17)
 
 
