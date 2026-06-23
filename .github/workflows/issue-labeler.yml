@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   label:
-    name: Auto-label issue
+    name: auto-label issue
     runs-on: ubuntu-latest
     if: github.repository == 'rhysmcneill/helm-semver'
     steps:
@@ -19,24 +19,24 @@ jobs:
             const content = [
               context.payload.issue.title,
               context.payload.issue.body ?? '',
-            ].join(' ').toLowerCase();
+            ].join(' ').tolowercase();
 
-            const labelMap = [
+            const labelmap = [
               { keywords: ['bug', 'error', 'fail', 'crash', 'broken', 'panic'],            label: 'bug' },
               { keywords: ['feature', 'enhancement', 'improve', 'add support', 'request'], label: 'enhancement' },
               { keywords: ['ci', 'workflow', 'action', 'pipeline', 'github actions'],      label: 'ci' },
               { keywords: ['doc', 'readme', 'contributing', 'comment', 'documentation'],   label: 'documentation' },
               { keywords: ['chore', 'dependency', 'dependabot', 'upgrade', 'bump'],        label: 'chore' },
-              { keywords: ['performance', 'benchmark', 'slow', 'latency', 'perf'],         label: 'performance' },
+              { keywords: ['performance', 'benchmark', 'slow', 'perf'],                    label: 'performance' },
               { keywords: ['security', 'cve', 'vulnerability', 'gosec'],                   label: 'security' },
             ];
 
-            const matched = labelMap
+            const matched = labelmap
               .filter(({ keywords }) => keywords.some(kw => content.includes(kw)))
               .map(({ label }) => label);
 
             if (matched.length > 0) {
-              await github.rest.issues.addLabels({
+              await github.rest.issues.addlabels({
                 ...context.repo,
                 issue_number: context.issue.number,
                 labels: matched,
