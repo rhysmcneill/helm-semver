@@ -186,7 +186,7 @@ func releaseChart(cmd *cobra.Command, opts *releaseOptions, gitClient *igit.Clie
 		return fmt.Errorf("listing commits for %s: %w", chartName, err)
 	}
 
-	bump := semver.Analyze(commits)
+	bump := semver.Analyze(igit.Subjects(commits))
 	if bump == semver.BumpNone {
 		_, _ = fmt.Fprintf(out, "  %s: no releasable commits — skipping\n", chartName)
 		return nil
@@ -227,7 +227,8 @@ func releaseChart(cmd *cobra.Command, opts *releaseOptions, gitClient *igit.Clie
 	// Update changelog.
 	if opts.changelog {
 		clPath := filepath.Join(chartDir, "CHANGELOG.md")
-		if err := changelog.Append(clPath, newVersion, time.Now(), commits); err != nil {
+		repo := changelog.RepoInfo{Owner: opts.githubOwner, Name: opts.githubRepo}
+		if err := changelog.Append(clPath, newVersion, time.Now(), commits, lastTag, newTag, repo); err != nil {
 			return fmt.Errorf("updating changelog: %w", err)
 		}
 		if err := gitClient.StageFile(filepath.Join(relPath, "CHANGELOG.md")); err != nil {
@@ -253,7 +254,7 @@ func releaseChart(cmd *cobra.Command, opts *releaseOptions, gitClient *igit.Clie
 
 	// GitHub Release.
 	if opts.githubRelease && opts.gitToken != "" {
-		notes := release.BuildReleaseNotes(commits)
+		notes := release.BuildReleaseNotes(commits, opts.githubOwner, opts.githubRepo)
 		rc := release.New(opts.gitToken, opts.githubOwner, opts.githubRepo)
 		url, err := rc.CreateRelease(context.Background(), newTag, chartName+" "+newVersion, notes)
 		if err != nil {

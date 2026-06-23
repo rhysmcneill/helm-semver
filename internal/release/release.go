@@ -5,9 +5,12 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/google/go-github/v63/github"
 	"golang.org/x/oauth2"
+
+	igit "github.com/rhysmcneill/helm-semver/internal/git"
 )
 
 // Client wraps the GitHub API for creating releases.
@@ -58,14 +61,39 @@ func (c *Client) UploadAsset(ctx context.Context, releaseID int64, assetPath str
 	return nil
 }
 
-// BuildReleaseNotes formats commit subjects into a markdown release notes body.
-func BuildReleaseNotes(commits []string) string {
+// BuildReleaseNotes formats commits into a markdown release notes body.
+// When repoOwner and repoName are non-empty, each entry includes PR and commit
+// SHA hyperlinks matching the release-please format.
+func BuildReleaseNotes(commits []igit.CommitInfo, repoOwner, repoName string) string {
 	if len(commits) == 0 {
 		return ""
 	}
-	var out string
-	for _, c := range commits {
-		out += "- " + c + "\n"
+
+	repoBase := ""
+	if repoOwner != "" && repoName != "" {
+		repoBase = fmt.Sprintf("https://github.com/%s/%s", repoOwner, repoName)
 	}
-	return out
+
+	var sb strings.Builder
+	for _, c := range commits {
+		var links []string
+		if repoBase != "" {
+			if c.PR > 0 {
+				links = append(links, fmt.Sprintf("([#%d](%s/pull/%d))", c.PR, repoBase, c.PR))
+			}
+			if c.Hash != "" {
+				short := c.Hash
+				if len(short) > 7 {
+					short = short[:7]
+				}
+				links = append(links, fmt.Sprintf("([%s](%s/commit/%s))", short, repoBase, c.Hash))
+			}
+		}
+		if len(links) > 0 {
+			fmt.Fprintf(&sb, "- %s %s\n", c.Subject, strings.Join(links, " "))
+		} else {
+			fmt.Fprintf(&sb, "- %s\n", c.Subject)
+		}
+	}
+	return sb.String()
 }

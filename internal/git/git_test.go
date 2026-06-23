@@ -98,6 +98,52 @@ func TestCommitsSince_NoTag(t *testing.T) {
 	if len(commits) < 2 {
 		t.Errorf("CommitsSince() returned %d commits, want >= 2", len(commits))
 	}
+	for _, ci := range commits {
+		if ci.Subject == "" {
+			t.Error("CommitInfo.Subject should not be empty")
+		}
+		if ci.Hash == "" {
+			t.Error("CommitInfo.Hash should not be empty")
+		}
+		if len(ci.Hash) != 40 {
+			t.Errorf("CommitInfo.Hash should be 40 chars, got %d: %s", len(ci.Hash), ci.Hash)
+		}
+	}
+}
+
+func TestParsePR(t *testing.T) {
+	tests := []struct {
+		subject string
+		want    int
+	}{
+		{"feat: add redis (#42)", 42},
+		{"fix: auth error (#123)", 123},
+		{"chore: cleanup", 0},
+		{"feat: no trailing paren (#", 0},
+	}
+	for _, tt := range tests {
+		got := parsePR(tt.subject)
+		if got != tt.want {
+			t.Errorf("parsePR(%q) = %d, want %d", tt.subject, got, tt.want)
+		}
+	}
+}
+
+func TestSubjects(t *testing.T) {
+	commits := []CommitInfo{
+		{Subject: "feat: a", Hash: "abc123", PR: 1},
+		{Subject: "fix: b", Hash: "def456", PR: 0},
+	}
+	got := Subjects(commits)
+	want := []string{"feat: a", "fix: b"}
+	if len(got) != len(want) {
+		t.Fatalf("Subjects() len = %d, want %d", len(got), len(want))
+	}
+	for i, s := range got {
+		if s != want[i] {
+			t.Errorf("Subjects()[%d] = %q, want %q", i, s, want[i])
+		}
+	}
 }
 
 func TestStageAndCommit(t *testing.T) {
