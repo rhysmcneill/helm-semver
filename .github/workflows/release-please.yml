@@ -16,12 +16,19 @@ jobs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - uses: googleapis/release-please-action@v4
         id: release
         with:
           release-type: go
           config-file: tools/release-please-config.json
           manifest-file: tools/.release-please-manifest.json
+          token: ${{ steps.app-token.outputs.token }}
 
   binaries:
     name: Build & upload binaries
@@ -132,16 +139,24 @@ jobs:
       contents: write
 
     steps:
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Move v{major} tag to this release
         env:
           TAG: ${{ needs.release-please.outputs.tag_name }}
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           MAJOR="${TAG%%.*}"
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "helm-semver[bot]"
+          git config user.email "4134222+helm-semver[bot]@users.noreply.github.com"
           # Tag against the current SHA directly — the release tag isn't fetched
           # in the shallow clone so resolving it by name would fail.
           git tag -f "${MAJOR}" "${{ github.sha }}"
