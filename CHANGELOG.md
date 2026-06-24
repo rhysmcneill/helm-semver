@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/rhysmcneill/helm-semver/compare/v1.0.7...v1.1.0) (2026-06-24)
+
+
+### Features
+
+* **changelog:** update the changelog structure that is produced by helm-semver to include pr links and release-please style logging ([#44](https://github.com/rhysmcneill/helm-semver/issues/44)) ([1fc0524](https://github.com/rhysmcneill/helm-semver/commit/1fc0524ab6cbb7664f067093e1d29d7a5bfab2ce))
+
+
+### Bug Fixes
+
+* **ci:** add helm-semver bot for release automation ([#46](https://github.com/rhysmcneill/helm-semver/issues/46)) ([a015173](https://github.com/rhysmcneill/helm-semver/commit/a0151733336f1bab0de56d4f32dbf8f3c54037aa))
+
 ## [1.0.7](https://github.com/rhysmcneill/helm-semver/compare/v1.0.6...v1.0.7) (2026-06-22)
 
 
