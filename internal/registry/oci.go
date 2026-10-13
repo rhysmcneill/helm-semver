@@ -18,6 +18,9 @@ type OCIPublisher struct {
 	// Username and Password for registry authentication.
 	Username string
 	Password string
+	// PlainHTTP disables TLS for the registry connection, e.g. for an
+	// in-cluster registry reached over a Service DNS name with no cert.
+	PlainHTTP bool
 }
 
 // Push packages the chart at chartDir and pushes it to the OCI registry.
@@ -49,6 +52,9 @@ func (p *OCIPublisher) Push(chartDir, version string) error {
 		clientOpts = append(clientOpts,
 			helmregistry.ClientOptBasicAuth(p.Username, p.Password),
 		)
+	}
+	if p.PlainHTTP {
+		clientOpts = append(clientOpts, helmregistry.ClientOptPlainHTTP())
 	}
 	client, err := helmregistry.NewClient(clientOpts...)
 	if err != nil {
