@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/rhysmcneill/helm-semver/compare/v1.1.0...v1.2.0) (2026-10-13)
+
+
+### Features
+
+* **registry:** add --registry-plain-http for OCI pushes over plain HTTP ([#75](https://github.com/rhysmcneill/helm-semver/issues/75)) ([9e4e5d3](https://github.com/rhysmcneill/helm-semver/commit/9e4e5d308226ed1670c81793d1229af05176d398))
+
 ## [1.1.0](https://github.com/rhysmcneill/helm-semver/compare/v1.0.7...v1.1.0) (2026-06-24)
 
 
