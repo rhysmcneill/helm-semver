@@ -51,12 +51,12 @@ jobs:
           TAG: ${{ github.event.inputs.tag }}
         run: |
           VERSION="${TAG#v}"
-          COMMIT="${GITHUB_SHA::8}"
+          COMMIT="$(git rev-parse --short HEAD)"
           BUILD_DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           LDFLAGS="-s -w \
-            -X github.com/rmcneill/helm-semver/internal/version.Version=${VERSION} \
-            -X github.com/rmcneill/helm-semver/internal/version.Commit=${COMMIT} \
-            -X github.com/rmcneill/helm-semver/internal/version.BuildDate=${BUILD_DATE}"
+            -X github.com/rhysmcneill/helm-semver/internal/version.Version=${VERSION} \
+            -X github.com/rhysmcneill/helm-semver/internal/version.Commit=${COMMIT} \
+            -X github.com/rhysmcneill/helm-semver/internal/version.BuildDate=${BUILD_DATE}"
           BINARY="helm-semver-${GOOS}-${GOARCH}${{ matrix.ext }}"
           go build -ldflags="${LDFLAGS}" -o "${BINARY}" ./cmd/helm-semver
           sha256sum "${BINARY}" > "${BINARY}.sha256"
@@ -81,6 +81,15 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.inputs.tag }}
+
+      - name: Resolve tag metadata
+        id: tag_meta
+        env:
+          TAG: ${{ github.event.inputs.tag }}
+        run: |
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+          echo "commit=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+          echo "build_date=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
@@ -114,8 +123,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            VERSION=${{ github.event.inputs.tag }}
-            COMMIT=${{ github.sha }}
-            BUILD_DATE=${{ github.event.repository.updated_at }}
+            VERSION=${{ steps.tag_meta.outputs.version }}
+            COMMIT=${{ steps.tag_meta.outputs.commit }}
+            BUILD_DATE=${{ steps.tag_meta.outputs.build_date }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
