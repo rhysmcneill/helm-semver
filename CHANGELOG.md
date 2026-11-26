@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/rhysmcneill/helm-semver/compare/v1.2.0...v1.2.1) (2026-11-26)
+
+
+### Bug Fixes
+
+* **release:** label artifacts with the tag and fix the ldflags module path ([#82](https://github.com/rhysmcneill/helm-semver/issues/82)) ([1d0e4ea](https://github.com/rhysmcneill/helm-semver/commit/1d0e4ea6a8ac73843dd944803b2a47ba97a48472))
+
 ## [1.2.0](https://github.com/rhysmcneill/helm-semver/compare/v1.1.0...v1.2.0) (2026-10-13)
 
 
